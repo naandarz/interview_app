@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useWorkspace } from '../lib/store'
 import { Icon } from '../components/Icon'
+import { HelpDialog } from '../components/HelpDialog'
 import { Button, Checkbox, Field, InlineNotice, Input, Spinner, useToast } from '../components/ui'
 
 const EMAIL_PATTERN = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
@@ -31,6 +32,7 @@ export function Onboarding() {
   const [errors, setErrors] = useState<Partial<Record<'name' | 'email' | 'institution' | 'consent', string>>>({})
   const [consent, setConsent] = useState(false)
   const [busy, setBusy] = useState(false)
+  const [helpOpen, setHelpOpen] = useState(false)
   const [submitError, setSubmitError] = useState<string | null>(null)
 
   const setField = (key: 'name' | 'email' | 'institution', value: string) => {
@@ -248,7 +250,55 @@ export function Onboarding() {
             </p>
           </div>
         </div>
+
+        <footer className="mt-10 flex flex-col items-center justify-between gap-3 border-t border-line/60 pt-5 text-xs text-ink-muted sm:flex-row">
+          <div className="flex items-center gap-2">
+            <span>Interview Workspace</span>
+            <span className="text-line-strong">•</span>
+            <span>Pengembang:</span>
+            <a
+              href="https://github.com/naandarz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 font-medium text-ink hover:text-primary transition-colors"
+            >
+              <Icon name="github" size={13} />
+              <span>naandarz</span>
+            </a>
+          </div>
+
+          <div className="flex flex-wrap items-center justify-center gap-x-4 gap-y-2">
+            <a
+              href="mailto:nndarz03@gmail.com"
+              className="inline-flex items-center gap-1 text-ink-soft hover:text-primary transition-colors"
+              title="Kirim email ke developer"
+            >
+              <Icon name="mail" size={13} />
+              <span>nndarz03@gmail.com</span>
+            </a>
+            <a
+              href="https://wa.me/6285601689713"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1 text-ink-soft hover:text-success transition-colors"
+              title="WhatsApp developer"
+            >
+              <Icon name="phone" size={13} />
+              <span>085601689713</span>
+            </a>
+            <button
+              type="button"
+              onClick={() => setHelpOpen(true)}
+              className="inline-flex items-center gap-1 font-medium text-primary hover:underline"
+            >
+              <Icon name="help" size={13} />
+              <span>Bantuan & Info</span>
+            </button>
+          </div>
+        </footer>
       </div>
+
+      <HelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
     </div>
   )
 }

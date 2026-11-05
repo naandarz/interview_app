@@ -6,6 +6,7 @@ import { lastProjectActivity, projectSessions, projectStats, projectRespondents 
 import { formatDate, relativeTime } from '../lib/utils'
 import { usePageTitle } from '../lib/hooks'
 import { ProjectDialog } from '../components/ProjectDialog'
+import { HelpDialog } from '../components/HelpDialog'
 import { Icon } from '../components/Icon'
 import {
   Badge,
@@ -160,6 +161,7 @@ export function Dashboard() {
   const [createOpen, setCreateOpen] = useState(false)
   const [editing, setEditing] = useState<Project | null>(null)
   const [deleting, setDeleting] = useState<Project | null>(null)
+  const [helpOpen, setHelpOpen] = useState(false)
   const [busy, setBusy] = useState(false)
 
   const totals = useMemo(() => {
@@ -416,8 +418,62 @@ export function Dashboard() {
         </section>
       ) : null}
 
+      <section
+        className="mt-8 rounded-[12px] border border-line bg-surface p-4 sm:p-5"
+        aria-labelledby="dashboard-dev-contact"
+      >
+        <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+          <div className="flex items-start gap-3">
+            <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-primary-soft text-primary">
+              <Icon name="help" size={20} />
+            </span>
+            <div className="min-w-0">
+              <h2 id="dashboard-dev-contact" className="text-[14px] font-semibold text-ink">
+                Bantuan & Kontak Pengembang
+              </h2>
+              <p className="mt-0.5 text-xs leading-relaxed text-ink-muted">
+                Memiliki pertanyaan, kendala, atau saran pengembangan? Hubungi langsung pengembang aplikasi.
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2">
+            <a
+              href="mailto:nndarz03@gmail.com"
+              className="inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-line bg-surface-2/60 px-3 py-1.5 text-xs font-medium text-ink transition-colors hover:bg-surface-2 hover:text-primary"
+            >
+              <Icon name="mail" size={14} className="text-primary" />
+              <span>nndarz03@gmail.com</span>
+            </a>
+            <a
+              href="https://wa.me/6285601689713"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-line bg-surface-2/60 px-3 py-1.5 text-xs font-medium text-ink transition-colors hover:bg-surface-2 hover:text-success"
+            >
+              <Icon name="phone" size={14} className="text-success" />
+              <span>085601689713</span>
+            </a>
+            <a
+              href="https://github.com/naandarz"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex min-h-9 items-center gap-1.5 rounded-lg border border-line bg-surface-2/60 px-3 py-1.5 text-xs font-medium text-ink transition-colors hover:bg-surface-2"
+            >
+              <Icon name="github" size={14} />
+              <span>GitHub @naandarz</span>
+              <Icon name="external" size={12} className="text-ink-muted" />
+            </a>
+            <Button variant="secondary" size="sm" onClick={() => setHelpOpen(true)}>
+              Panduan Lengkap
+            </Button>
+          </div>
+        </div>
+      </section>
+
       <ProjectDialog open={createOpen} onClose={() => setCreateOpen(false)} onCreated={(project) => navigate(`/p/${project.id}`)} />
       <ProjectDialog open={Boolean(editing)} onClose={() => setEditing(null)} project={editing ?? undefined} />
+      <HelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
 
       <ConfirmDialog
         open={Boolean(deleting)}

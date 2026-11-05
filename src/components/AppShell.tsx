@@ -5,6 +5,8 @@ import { Button, Drawer, IconButton, InlineNotice, Spinner, cx } from './ui'
 import { useWorkspace } from '../lib/store'
 import { useTheme } from '../lib/theme'
 import { projectSessions } from '../lib/selectors'
+import { AppFooter } from './AppFooter'
+import { HelpDialog } from './HelpDialog'
 
 interface NavItem {
   label: string
@@ -174,10 +176,21 @@ function NavContent({ onNavigate }: { onNavigate?: () => void }) {
   )
 }
 
-function SidebarFooter() {
+function SidebarFooter({ onOpenHelp }: { onOpenHelp?: () => void }) {
   const { resolved, toggle } = useTheme()
   return (
-    <div className="border-t border-line px-3 py-3">
+    <div className="border-t border-line px-3 py-3 space-y-2">
+      {onOpenHelp ? (
+        <button
+          type="button"
+          onClick={onOpenHelp}
+          className="flex w-full min-h-8 items-center gap-2 rounded-[8px] px-2 py-1.5 text-xs text-ink-soft transition-colors hover:bg-surface-2 hover:text-ink"
+        >
+          <Icon name="help" size={14} className="shrink-0 text-primary" />
+          <span className="flex-1 text-left font-medium">Bantuan & Kontak Dev</span>
+          <span className="mono-meta text-[10px] text-ink-muted">naandarz</span>
+        </button>
+      ) : null}
       <div className="flex items-center justify-between gap-2 rounded-[9px] px-1.5 py-1">
         <span className="flex items-center gap-1.5 text-[11px] leading-tight text-ink-muted">
           <Icon name="database" size={13} className="shrink-0" />
@@ -247,6 +260,7 @@ function Breadcrumb({ projectTitle }: { projectTitle?: string }) {
 
 export function AppShell() {
   const [mobileOpen, setMobileOpen] = useState(false)
+  const [helpOpen, setHelpOpen] = useState(false)
   const { data, saveState, saveError, storageError, retrySave } = useWorkspace()
   const { toggle, resolved } = useTheme()
   const location = useLocation()
@@ -274,10 +288,10 @@ export function AppShell() {
         <div className="min-h-0 flex-1 overflow-y-auto px-2.5 pb-4">
           <NavContent />
         </div>
-        <SidebarFooter />
+        <SidebarFooter onOpenHelp={() => setHelpOpen(true)} />
       </aside>
 
-      <div className="lg:pl-[268px]">
+      <div className="flex min-h-dvh flex-col lg:pl-[268px]">
         <header className="sticky top-0 z-20 border-b border-line bg-paper/90 backdrop-blur-md">
           <div className="flex h-14 items-center gap-2 px-3 sm:gap-3 sm:px-6 lg:px-8">
             <button
@@ -292,6 +306,13 @@ export function AppShell() {
             <div className="ml-auto flex items-center gap-1 sm:gap-2">
               <HeaderSave />
               <span className="mx-1 hidden h-4 w-px bg-line sm:block" aria-hidden="true" />
+              <IconButton
+                label="Bantuan & Kontak Pengembang"
+                icon="help"
+                onClick={() => setHelpOpen(true)}
+                size="sm"
+                variant="ghost"
+              />
               <IconButton
                 label={resolved === 'dark' ? 'Gunakan tema terang' : 'Gunakan tema gelap'}
                 icon={resolved === 'dark' ? 'sun' : 'moon'}
@@ -313,7 +334,7 @@ export function AppShell() {
           ) : null}
         </header>
 
-        <main id="konten-utama" className="mx-auto w-full max-w-[1400px] px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
+        <main id="konten-utama" className="mx-auto w-full max-w-[1400px] flex-1 px-4 py-6 sm:px-6 sm:py-8 lg:px-8">
           {storageError ? (
             <InlineNotice
               tone="danger"
@@ -331,6 +352,8 @@ export function AppShell() {
           ) : null}
           <Outlet />
         </main>
+
+        <AppFooter onOpenHelp={() => setHelpOpen(true)} />
       </div>
 
       <Drawer open={mobileOpen} onClose={() => setMobileOpen(false)} title="Navigasi" width="md">
@@ -339,6 +362,8 @@ export function AppShell() {
         </div>
         <NavContent onNavigate={() => setMobileOpen(false)} />
       </Drawer>
+
+      <HelpDialog open={helpOpen} onClose={() => setHelpOpen(false)} />
     </div>
   )
 }
